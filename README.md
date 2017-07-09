@@ -4,6 +4,6 @@ Author
 
 Сдыков Даурен 
 
-slack: Sdykov Dauren
+slack: Dauren Sdykov 
 
 email: elessarelfstone@mail.ru
