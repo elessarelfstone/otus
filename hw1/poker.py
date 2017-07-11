@@ -17,15 +17,18 @@
 # (относительно значения, возвращаемого hand_rank)
 # "руку" из 5ти карт. Кроме прочего в данном варианте "рука"
 # может включать джокера. Джокеры могут заменить карту любой
-# масти и ранга того же цвета. Черный джокер '?B' может быть
-# использован в качестве треф или пик любого ранга, красный
-# джокер '?R' - в качестве черв и бубен люього ранга.
+# масти и ранга того же цвета, в колоде два джокерва.
+# Черный джокер '?B' может быть использован в качестве треф
+# или пик любого ранга, красный джокер '?R' - в качестве черв и бубен
+# любого ранга.
 
 # Одна функция уже реализована, сигнатуры и описания других даны.
 # Вам наверняка пригодится itertoolsю
 # Можно свободно определять свои функции и т.п.
 # -----------------
 
+import itertools
+from collections import Counter
 
 def hand_rank(hand):
     """Возвращает значение определяющее ранг 'руки'"""
@@ -53,35 +56,54 @@ def hand_rank(hand):
 def card_ranks(hand):
     """Возвращает список рангов (его числовой эквивалент),
     отсортированный от большего к меньшему"""
-    return
-
+    sorting_template = {'2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, 'T': 10, 'J': 11, 'Q': 12, 'K': 13, 'A': 14}
+    hand =  [sorting_template[card[0]] for card in hand]
+    hand = sorted(hand)
+    return hand[::-1]
+    # sorted_hand = sorted(hand, key = lambda s:(sorting_template[s[0]]))
+    # return [sorting_template[card[0]] for card in sorted_hand]
 
 def flush(hand):
     """Возвращает True, если все карты одной масти"""
-    return
+    shrinked_hand = set(card[1] for card in hand)
+    return len(shrinked_hand) == 1
 
 
 def straight(ranks):
     """Возвращает True, если отсортированные ранги формируют последовательность 5ти,
     где у 5ти карт ранги идут по порядку (стрит)"""
-    return
+    return ranks == list(range(min(ranks), max(ranks)+1))
 
 
 def kind(n, ranks):
     """Возвращает первый ранг, который n раз встречается в данной руке.
     Возвращает None, если ничего не найдено"""
-    return
+    c = Counter(ranks)
+    for cnts in c.most_common():
+        if cnts[1] == n:
+            return cnts[0]
+    return None
 
 
 def two_pair(ranks):
     """Если есть две пары, то возврщает два соответствующих ранга,
     иначе возвращает None"""
-    return
+    c = Counter(ranks)
+    pairs = c.most_common(2)
+    if pairs[0][1] == pairs[1][1] == 2:
+        return (pairs[0][0], pairs[1][0])
+
+    return None
 
 
 def best_hand(hand):
     """Из "руки" в 7 карт возвращает лучшую "руку" в 5 карт """
-    return
+    combinations = list(itertools.combinations(hand, 5))
+    best = combinations[0]
+    for combination in combinations:
+        if hand_rank(combination) > hand_rank(best):
+            best = combination
+    return best
 
 
 def best_wild_hand(hand):
@@ -97,7 +119,6 @@ def test_best_hand():
             == ['8C', '8S', 'TC', 'TD', 'TH'])
     assert (sorted(best_hand("JD TC TH 7C 7D 7S 7H".split()))
             == ['7C', '7D', '7H', '7S', 'JD'])
-    return 'test_best_hand passes'
     print 'OK'
 
 
