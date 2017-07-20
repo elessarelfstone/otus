@@ -58,8 +58,9 @@ def card_ranks(hand):
     отсортированный от большего к меньшему"""
     sorting_template = {'2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, 'T': 10, 'J': 11, 'Q': 12, 'K': 13, 'A': 14}
     hand =  [sorting_template[card[0]] for card in hand]
-    hand = sorted(hand)
-    return hand[::-1]
+    # hand = sorted(hand)
+    # return hand[::-1]
+    return sorted(hand, reverse=True)
     # sorted_hand = sorted(hand, key = lambda s:(sorting_template[s[0]]))
     # return [sorting_template[card[0]] for card in sorted_hand]
 
@@ -72,7 +73,7 @@ def flush(hand):
 def straight(ranks):
     """Возвращает True, если отсортированные ранги формируют последовательность 5ти,
     где у 5ти карт ранги идут по порядку (стрит)"""
-    return ranks == list(range(min(ranks), max(ranks)+1))
+    return ranks == list(range(max(ranks)+1, min(ranks)))
 
 
 def kind(n, ranks):
@@ -98,12 +99,13 @@ def two_pair(ranks):
 
 def best_hand(hand):
     """Из "руки" в 7 карт возвращает лучшую "руку" в 5 карт """
-    combinations = list(itertools.combinations(hand, 5))
-    best = combinations[0]
-    for combination in combinations:
-        if hand_rank(combination) > hand_rank(best):
-            best = combination
-    return best
+    # combinations = list(itertools.combinations(hand, 5))
+    # best = combinations[0]
+    # for combination in combinations:
+    #     if hand_rank(combination) > hand_rank(best):
+    #         best = combination
+
+    return max(itertools.combinations(hand, 5), key=hand_rank)
 
 
 def best_wild_hand(hand):
