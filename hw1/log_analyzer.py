@@ -55,9 +55,9 @@ def readln(file_path):
     log.close()
 
 
-def save_report(path, dst_path, rep_size, format ):
+def save_report(path, dst_path, rep_size, report, format ):
     """сохраняем отчет"""
-    report = prepare_report(path, rep_size)
+
     if format == "json":
         with open(path) as rp:
             rp.write(json.dumps(report))
@@ -147,13 +147,14 @@ def main():
     rep_size = 1000
     if not os.path.exists(rep_dir):
         os.makedirs(rep_dir)
-    chk_rp = check_report(log_dir)
+    name, date, path = check_report(log_dir)
 
-    if chk_rp[2] and not is_processed(rep_dir, chk_rp[1]):
-        print "Обработка файла %s..." % chk_rp[2]
-        lg_dt = "Повтор %s" % chk_rp[1] if chk_rp[2] and is_processed(rep_dir, chk_rp[1]) else chk_rp[1]
+    if path and not is_processed(rep_dir, date):
+        print "Обработка файла %s..." % path
+        lg_dt = "Повтор %s" % date if path and is_processed(rep_dir, date) else date
         sv_path = os.path.join(rep_dir, "report-%s" % lg_dt)
-        save_report(chk_rp[2], sv_path, rep_size, format="html")
+        report = prepare_report(path, rep_size)
+        save_report(path, sv_path, rep_size, report, format="html")
 
 if __name__ == "__main__":
     main()

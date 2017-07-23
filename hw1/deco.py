@@ -78,9 +78,22 @@ def trace(template):
 
     '''
     @decorator
-    def trace_decorator(f):
-        def
-    return
+    def trace_decor(func):
+        def trace_wrapper(*args):
+            call_representation = '{0}({1})'.format(f.__name__, ', '.join(map(repr, args)))
+            indent = trace.level * template
+            print '{0}-->{1}'.format(indent, call_representation)
+            trace_wrapper.level +=1
+            try:
+                res = func(*args)
+                indent = (trace.level-1) * template
+                print '{0} <-- {1} == {2}'.format(indent, call_representation, res)
+            finally:
+                trace.level -=1
+            return res
+        trace_wrapper.level = 0
+        return trace_wrapper
+    return trace_decor
 
 
 @memo
@@ -104,16 +117,18 @@ def fib(n):
     return 1 if n <= 1 else fib(n-1) + fib(n-2)
 
 
-def main():
-    print foo(4, 3)
-    print foo(4, 3, 2)
-    print foo(4, 3)
-    print "foo was called", foo.calls, "times"
 
-    print bar(4, 3)
-    print bar(4, 3, 2)
-    print bar(4, 3, 2, 1)
-    print "bar was called", bar.calls, "times"
+
+def main():
+    # print foo(4, 3)
+    # print foo(4, 3, 2)
+    # print foo(4, 3)
+    # print "foo was called", foo.calls, "times"
+    #
+    # print bar(4, 3)
+    # print bar(4, 3, 2)
+    # print bar(4, 3, 2, 1)
+    # print "bar was called", bar.calls, "times"
 
     print fib.__doc__
     fib(3)
